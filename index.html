@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="UTF-8"><title>Расписание занятий</title>
+<style>
+body{font-family:system-ui;display:flex;justify-content:center;padding:30px;background:#f4f6fb}
+.box{background:#fff;padding:24px;border-radius:14px;box-shadow:0 4px 20px rgba(0,0,0,.1);width:420px}
+input,select,button{width:100%;padding:10px;margin-bottom:10px;border-radius:8px;border:1px solid #dfe4ee;font-size:1rem}
+button{background:#3b5bdb;color:#fff;border:none;cursor:pointer}
+.item{display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid #eef1f8;gap:8px}
+.item button{width:auto;padding:4px 10px;background:#e03131;font-size:.85rem}
+#list{margin-top:12px}
+</style></head><body>
+<div class="box">
+  <h3>Расписание занятий</h3>
+  <input id="subject" placeholder="Предмет">
+  <input id="room" placeholder="Аудитория">
+  <select id="day"><option>Пн</option><option>Вт</option><option>Ср</option><option>Чт</option><option>Пт</option></select>
+  <input id="time" type="time">
+  <button onclick="add()">Добавить</button>
+  <div id="list"></div>
+</div>
+<script>
+let lessons = JSON.parse(localStorage.getItem('lessons')||'[]');
+function render(){
+  const el=document.getElementById('list'); el.innerHTML='';
+  lessons.forEach((l,i)=>{
+    const d=document.createElement('div'); d.className='item';
+    d.innerHTML=`<span>${l.day} ${l.time} — ${l.subject} (${l.room})</span>
+      <button onclick="del(${i})">Удалить</button>`;
+    el.appendChild(d);
+  });
+}
+function add(){
+  const subject=document.getElementById('subject').value;
+  const room=document.getElementById('room').value;
+  const day=document.getElementById('day').value;
+  const time=document.getElementById('time').value;
+  lessons.push({subject,room,day,time});
+  localStorage.setItem('lessons', JSON.stringify(lessons));
+  render();
+}
+function del(i){
+  lessons.pop();
+  localStorage.setItem('lessons', JSON.stringify(lessons));
+  render();
+}
+render();
+</script>
+</body></html>
